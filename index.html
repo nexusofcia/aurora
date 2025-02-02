@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora - Editor HTML</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e1e;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            margin: 10px;
+            font-size: 24px;
+            color: #ff79c6;
+        }
+        .editor-container {
+            display: flex;
+            width: 90%;
+            height: 80vh;
+            gap: 10px;
+        }
+        textarea {
+            flex: 1;
+            background: #282a36;
+            color: #f8f8f2;
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 16px;
+            font-family: monospace;
+            resize: none;
+        }
+        iframe {
+            flex: 1;
+            border: none;
+            background: white;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #ff79c6;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #ff56b2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Aurora - Editor HTML</h1>
+    <div class="buttons">
+        <button onclick="openFile()">Abrir Arquivo</button>
+        <button onclick="saveFile()">Salvar</button>
+    </div>
+    
+    <div class="editor-container">
+        <textarea id="codeEditor" placeholder="Escreva seu código HTML aqui..."></textarea>
+        <iframe id="preview"></iframe>
+    </div>
+
+    <input type="file" id="fileInput" accept=".html" style="display: none">
+
+    <script>
+        const editor = document.getElementById('codeEditor');
+        const preview = document.getElementById('preview');
+        const fileInput = document.getElementById('fileInput');
+
+        editor.addEventListener('input', updatePreview);
+
+        function updatePreview() {
+            preview.srcdoc = editor.value;
+        }
+
+        function openFile() {
+            fileInput.click();
+        }
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    editor.value = e.target.result;
+                    updatePreview();
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function saveFile() {
+            const blob = new Blob([editor.value], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'index.html';  // Salva como "index.html"
+            a.click();
+        }
+
+        // Código inicial de exemplo
+        editor.value = "<h1>Bem-vindo ao Aurora!</h1><p>Edite este código para ver o resultado aqui.</p>";
+        updatePreview();
+    </script>
+
+</body>
+</html>
